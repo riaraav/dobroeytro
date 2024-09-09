@@ -1,0 +1,27 @@
+class Mother:
+    def __init__(self, name, age):
+        self._name = name
+        self._age = age
+
+    def __str__(self):
+        return f" {self._name}, {self._age} years old"
+
+    def do_something(self):
+        print("Mother is doing something.")
+class Daughter(Mother):
+    def __init__(self, name, age, hobby):
+        super().__init__(name, age)
+        self._hobby = hobby
+
+    def __str__(self):
+        return f"Daughter: {self._name}, {self._age} years old, hobby: {self._hobby}"
+
+    def do_something(self):
+        print("Daughter is doing something.")
+mother = Mother("Jane", 45)
+print(mother)  # Output: Mother: Jane, 45 years old
+mother.do_something()  # Output: Mother is doing something.
+
+daughter = Daughter("Alice", 20, "painting")
+print(daughter)  # Output: Daughter: Alice, 20 years old, hobby: painting
+daughter.do_something()  # Output: Daughter is doing something.
