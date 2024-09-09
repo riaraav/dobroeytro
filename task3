@@ -1,0 +1,19 @@
+class Animal:
+    def __init__(self, name, age):
+        self._name = name
+        self._age = age
+
+    def get_description(self):
+        return f"{self._name}, {self._age} years old"
+class Zebra(Animal):
+    def get_description(self):
+        return f"{self._name}, {self._age} years old, a zebra"
+
+class Dolphin(Animal):
+    def get_description(self):
+        return f"{self._name}, {self._age} years old, a dolphin"
+zebra = Zebra("Stripes", 5)
+dolphin = Dolphin("Flipper", 10)
+
+print(zebra.get_description())  # Stripes, 5 years old, a zebra
+print(dolphin.get_description())  # Flipper, 10 years old, a dolphin
