@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import pygame
+import random
+import math
+
+SCREEN_DIM = (800, 600)
+
+class Vec2d:
+    """Класс для 2D-векторов."""
+    
+    def __init__(self, x=0, y=0):
+        self.x = x
+        self.y = y
+        
+    def __add__(self, other):
+        """Сложение векторов."""
+        return Vec2d(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other):
+        """Вычитание векторов."""
+        return Vec2d(self.x - other.x, self.y - other.y)
+
+    def __mul__(self, scalar):
+        """Умножение вектора на скаляр."""
+        return Vec2d(self.x * scalar, self.y * scalar)
+
+    def __len__(self):
+        """Возвращает длину вектора."""
+        return math.sqrt(self.x ** 2 + self.y ** 2)
+
+    def int_pair(self):
+        """Возвращает координаты вектора как кортеж из целых чисел."""
+        return int(self.x), int(self.y)
+
+
+class Polyline:
+    """Класс для замкнутой ломаной линии."""
+    
+    def __init__(self):
+        self.points = []
+    
+    def add_point(self, point: Vec2d):
+        """Добавляет точку в ломаную."""
+        self.points.append(point)
+
+    def set_points(self):
+        """Пересчитывает координаты точек (можно реализовать дополнительную логику)."""
+        # Здесь можно добавить логику для пересчета, если это необходимо
+        pass
+    
+    def draw_points(self, screen):
+        """Отрисовка ломаной на экране."""
+        if len(self.points) < 2:
+            return
+        pygame.draw.lines(screen, (255, 255, 255), True, [point.int_pair() for point in self.points], 2)
+
+class Knot(Polyline):
+    """Класс для узлов, наследующий от Polyline."""
+    
+    def __init__(self):
+        super().__init__()
+
+    def add_point(self, point: Vec2d):
+        """Добавляет точку и пересчитывает кривую."""
+        super().add_point(point)
+        self.get_knot()
+
+    def get_knot(self):
+        """Расчет кривой по опорным точкам."""
+        # Добавьте логику для получения кривой по опорным точкам
+        print("Calculating knot...")  # Здесь будет ваша логика
+
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode(SCREEN_DIM)
+    clock = pygame.time.Clock()
+    
+    polyline = Knot()
+    
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        
+        # Пример добавления точек
+        if random.random() < 0.01:  # Добавляем точки с некоторой вероятностью
+            point = Vec2d(random.uniform(0, SCREEN_DIM[0]), random.uniform(0, SCREEN_DIM[1]))
+            polyline.add_point(point)
+
+        screen.fill((0, 0, 0))  # Чистим экран
+        polyline.draw_points(screen)  # Отрисовываем полилинию
+        pygame.display.flip()
+        clock.tick(60)
+
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
