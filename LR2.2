@@ -1,0 +1,109 @@
+import math
+from itertools import combinations
+
+class Vector:
+    def __init__(self, x=0, y=0, z=0):  
+        if isinstance(x, str):
+            coords = x.split(',')
+            self.x = float(coords[0])
+            self.y = float(coords[1])
+            self.z = float(coords[2]) if len(coords) > 2 else 0.0
+        else:
+            self.x = x
+            self.y = y
+            self.z = z
+
+    def __str__(self):  
+        return f"({self.x}, {self.y}, {self.z})"
+
+    def __add__(self, other):  
+        return Vector(self.x + other.x, self.y + other.y, self.z + other.z)
+
+    def __sub__(self, other):  
+        return Vector(self.x - other.x, self.y - other.y, self.z - other.z)
+
+    def __mul__(self, scalar):  
+        return Vector(self.x * scalar, self.y * scalar, self.z * scalar)
+
+    def __truediv__(self, scalar):  
+        return Vector(self.x / scalar, self.y / scalar, self.z / scalar)
+
+    def magnitude(self):
+        return math.sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)  
+
+    def __eq__(self, other):  
+        return math.isclose(self.x, other.x) and math.isclose(self.y, other.y) and math.isclose(self.z, other.z)
+
+    def cross_product(self, other):
+        return Vector(
+            self.y * other.z - self.z * other.y,
+            self.z * other.x - self.x * other.z,
+            self.x * other.y - self.y * other.x
+        )
+
+def get_farthest_point(points):
+    return max(points, key=lambda v: v.magnitude())
+
+def center_of_mass(points):
+    if not points:
+        return Vector(0, 0, 0)
+    total = Vector(0, 0, 0)
+    for point in points:
+        total += point
+    return total / len(points)
+
+def parallelogram_area(v1, v2):
+    return v1.magnitude() * v2.magnitude() * math.sin(math.acos(v1.cross_product(v2).magnitude() / (v1.magnitude() * v2.magnitude())))
+
+def parallelepiped_volume(v1, v2, v3):
+    return abs(v1.x * (v2.y * v3.z - v2.z * v3.y) - v1.y * (v2.x * v3.z - v2.z * v3.x) + v1.z * (v2.x * v3.y - v2.y * v3.x))
+
+def triangle_perimeter(points):
+    max_perimeter = 0
+    for p1, p2, p3 in combinations(points, 3):
+        perimeter = p1.magnitude() + p2.magnitude() + p3.magnitude()
+        if perimeter > max_perimeter:
+            max_perimeter = perimeter
+    return max_perimeter
+
+def triangle_area(points):
+    max_area = 0
+    for p1, p2, p3 in combinations(points, 3):
+        a = (p2 - p1).magnitude()
+        b = (p3 - p2).magnitude()
+        c = (p1 - p3).magnitude()
+        s = (a + b + c) / 2
+        area = math.sqrt(s * (s - a) * (s - b) * (s - c))
+        if area > max_area:
+            max_area = area
+    return max_area
+
+
+N = int(input("Введите количество точек: "))
+points = []
+
+for _ in range(N):
+    coords = input("Введите координаты точки в формате 'x,y,z': ")
+    points.append(Vector(coords))
+
+
+farthest_point = get_farthest_point(points)
+print(f"Наиболее удаленная точка: {farthest_point}")
+  
+cm = center_of_mass(points)
+print(f"Центр масс: {cm}")
+
+v1 = Vector(input("Введите координаты первого вектора (x,y,z): "))
+v2 = Vector(input("Введите координаты второго вектора (x,y,z): "))
+area = parallelogram_area(v1, v2)
+print(f"Площадь параллелограмма: {area}")
+
+v3 = Vector(input("Введите координаты третьего вектора (x,y,z): "))
+volume = parallelepiped_volume(v1, v2, v3)
+print(f"Объем параллелепипеда: {volume}")
+
+max_perim = triangle_perimeter(points)
+print(f"Треугольник с наибольшим периметром: {max_perim}")
+
+max_area = triangle_area(points)
+print(f"Треугольник с наибольшей площадью: {max_area}")
