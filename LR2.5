@@ -1,0 +1,123 @@
+import random
+
+class NucleotideError(Exception):
+    """Исключение для некорректных азотистых оснований."""
+    pass
+
+
+class DNA:
+    VALID_NUCLEOTIDES = {'A', 'T', 'G', 'C'}
+
+    def __init__(self, sequence):
+        self.sequence = self.validate_sequence(sequence)
+
+    @classmethod
+    def validate_sequence(cls, sequence):
+        if any(nucleotide not in cls.VALID_NUCLEOTIDES for nucleotide in sequence):
+            raise NucleotideError("Ошибка: некорректные азотистые основания в ДНК.")
+        return sequence
+
+    def __getitem__(self, index):
+        return self.sequence[index]
+
+    def complementary_rna(self):
+        comp_map = {'A': 'U', 'T': 'A', 'G': 'C', 'C': 'G'}
+        return RNA(''.join(comp_map[nuc] for nuc in self.sequence))
+
+    def __add__(self, other):
+        if isinstance(other, DNA):
+            return DNA(self.sequence + other.sequence)
+        return NotImplemented
+
+    def __mul__(self, other):
+        if not isinstance(other, DNA):
+            return NotImplemented
+
+        result_sequence = []
+        for i in range(max(len(self.sequence), len(other.sequence))):
+            if i < len(self.sequence) and i < len(other.sequence):
+                result_sequence.append(random.choice([self.sequence[i], other.sequence[i]]))
+            elif i < len(self.sequence):
+                result_sequence.append(self.sequence[i])
+            else:
+                result_sequence.append(other.sequence[i])
+        return DNA(''.join(result_sequence))
+
+
+class RNA:
+    VALID_NUCLEOTIDES = {'A', 'U', 'G', 'C'}
+
+    def __init__(self, sequence):
+        self.sequence = self.validate_sequence(sequence)
+
+    @classmethod
+    def validate_sequence(cls, sequence):
+        if any(nucleotide not in cls.VALID_NUCLEOTIDES for nucleotide in sequence):
+            raise NucleotideError("Ошибка: некорректные азотистые основания в РНК.")
+        return sequence
+
+    def __getitem__(self, index):
+        return self.sequence[index]
+
+    def complementary_dna(self):
+        comp_map = {'A': 'T', 'U': 'A', 'G': 'C', 'C': 'G'}
+        return DNA(''.join(comp_map[nuc] for nuc in self.sequence))
+
+    def __add__(self, other):
+        if isinstance(other, RNA):
+            return RNA(self.sequence + other.sequence)
+        return NotImplemented
+
+    def __mul__(self, other):
+        if not isinstance(other, RNA):
+            return NotImplemented
+
+        result_sequence = []
+        for i in range(max(len(self.sequence), len(other.sequence))):
+            if i < len(self.sequence) and i < len(other.sequence):
+                result_sequence.append(random.choice([self.sequence[i], other.sequence[i]]))
+            elif i < len(self.sequence):
+                result_sequence.append(self.sequence[i])
+            else:
+                result_sequence.append(other.sequence[i])
+        return RNA(''.join(result_sequence))
+
+
+# Пример использования
+
+if __name__ == '__main__':
+    try:
+        dna1 = DNA("ATGCA")
+        dna2 = DNA("TACGT")
+        rna1 = RNA("AUGCU")
+        rna2 = RNA("UCGAC")
+
+        # Вывод последовательностей
+        print(f"DNA 1: {dna1.sequence}")
+        print(f"DNA 2: {dna2.sequence}")
+        print(f"RNA 1: {rna1.sequence}")
+        print(f"RNA 2: {rna2.sequence}")
+
+        # Получение комплементарной РНК для ДНК
+        complementary_rna = dna1.complementary_rna()
+        print(f"Комплементарная РНК для DNA 1: {complementary_rna.sequence}")
+
+        # Получение комплементарной ДНК для РНК
+        complementary_dna = rna1.complementary_dna()
+        print(f"Комплементарная ДНК для RNA 1: {complementary_dna.sequence}")
+
+        # Примеры сложения и перемножения
+        combined_dna = dna1 + dna2
+        print(f"Сложение DNA 1 и DNA 2: {combined_dna.sequence}")
+
+        combined_rna = rna1 + rna2
+        print(f"Сложение RNA 1 и RNA 2: {combined_rna.sequence}")
+
+        multiplied_dna = dna1 * dna2
+        print(f"Перемножение DNA 1 и DNA 2: {multiplied_dna.sequence}")
+
+        multiplied_rna = rna1 * rna2
+        print(f"Перемножение RNA 1 и RNA 2: {multiplied_rna.sequence}")
+
+    except NucleotideError as e:
+        print(e)
