@@ -4,7 +4,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.types import Message
 from aiogram.filters import Command
 
-BOT_TOKEN = '7760350398:AAFZBjV8xpe8zr_ESYemIYjnCmcH1m_BdsE'
+BOT_TOKEN = '7753655419:AAEfKiX3ur19lGW3q-GgCblVBg03WtzjjMs'
 UNSPLASH_API_KEY = 'xtaOB5OOBZKYoMTMEoNtvGIEFve6ykphyublWSjbgz4'
 
 # Создаем бота и диспетчер
